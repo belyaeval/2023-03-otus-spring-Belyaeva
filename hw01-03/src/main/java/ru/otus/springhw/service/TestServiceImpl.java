@@ -17,14 +17,14 @@ public class TestServiceImpl implements TestService {
 
     private final AppProps appProps;
 
-    private final LocalizationMessageService lms;
+    private final LocalizationMsgService msgServ;
 
     @Autowired
-    public TestServiceImpl(TestDao testDao, IOService ioService, AppProps appProps, LocalizationMessageService lms) {
+    public TestServiceImpl(TestDao testDao, IOService ioService, AppProps appProps, LocalizationMsgService msgServ) {
         this.testDao = testDao;
         this.ioService = ioService;
         this.appProps = appProps;
-        this.lms = lms;
+        this.msgServ = msgServ;
     }
 
     @Override
@@ -34,13 +34,14 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public void doTest() {
-        Student student = greet();
         List<TestItem> testItems = getAllTestItems();
+        Student student = greet();
 
         for (TestItem ti : testItems) {
-            ioService.outputString(("\n" + lms.getLocalizedMsg("question.id")) + ti.getQuestionId());
-            ioService.outputString(ti.getQuestionBody() + "\n" + ti.getAnswers());
-            ioService.outputString(lms.getLocalizedMsg("student.answer.id"));
+            ioService.outputString(("\n" + msgServ.getLocalizedMsg("question.id")) + ti.getQuestionId());
+            ioService.outputString(ti.getQuestionBody());
+            ioService.outputString(ti.getAnswers());
+            ioService.outputString(msgServ.getLocalizedMsg("student.answer.id"));
             int answerId = getCorrectNumber();
             boolean isCorrectAnswer = isCorrectAnswer(answerId, ti, student);
 
@@ -52,7 +53,7 @@ public class TestServiceImpl implements TestService {
 
 
     private Student greet() {
-        String helloMgsLocalized = lms.getLocalizedMsg("hello.user");
+        String helloMgsLocalized = msgServ.getLocalizedMsg("hello.user");
         String studentName = ioService.readStringWithPrompt(helloMgsLocalized);
 
         return new Student(studentName);
@@ -63,8 +64,8 @@ public class TestServiceImpl implements TestService {
 
         try {
             answerId = ioService.readInt();
-            } catch (NumberFormatException e) {
-            throw new NumberFormatException(lms.getLocalizedMsg("wrong.answer.format"));
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException(msgServ.getLocalizedMsg("wrong.answer.format"));
         }
 
         return answerId;
@@ -82,9 +83,9 @@ public class TestServiceImpl implements TestService {
 
     private void printQuestionResult(boolean isCorrect, TestItem ti) {
         if (isCorrect) {
-            ioService.outputString(lms.getLocalizedMsg("correct.answer"));
+            ioService.outputString(msgServ.getLocalizedMsg("correct.answer"));
         } else {
-            ioService.outputString(lms.getLocalizedMsg("incorrect.answer") + ti.getCorrectId());
+            ioService.outputString(msgServ.getLocalizedMsg("incorrect.answer") + ti.getCorrectId());
         }
     }
 
@@ -92,12 +93,12 @@ public class TestServiceImpl implements TestService {
         int studentResult = student.getCorrectAnswersCount();
         String name = student.getName();
 
-        ioService.outputString(("\n" + lms.getLocalizedMsg("test.score", new String[]{name})) + studentResult);
+        ioService.outputString(("\n" + msgServ.getLocalizedMsg("test.score", new String[]{name})) + studentResult);
 
         if (studentResult >= appProps.getPassScore()) {
-            ioService.outputString(lms.getLocalizedMsg("test.pass"));
+            ioService.outputString(msgServ.getLocalizedMsg("test.pass"));
         } else {
-            ioService.outputString(lms.getLocalizedMsg("test.failed"));
+            ioService.outputString(msgServ.getLocalizedMsg("test.failed"));
         }
     }
 }

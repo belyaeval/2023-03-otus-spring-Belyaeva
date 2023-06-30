@@ -5,12 +5,12 @@ import org.springframework.stereotype.Component;
 import ru.otus.springhw.config.AppProps;
 
 @Component
-class LocalizationMessageService {
+class LocalizationMsgService {
     private final MessageSource messageSource;
 
     private final AppProps appProps;
 
-    public LocalizationMessageService(MessageSource messageSource, AppProps appProps) {
+    public LocalizationMsgService(MessageSource messageSource, AppProps appProps) {
         this.messageSource = messageSource;
         this.appProps = appProps;
     }

@@ -41,11 +41,10 @@ public class TestDaoImpl implements TestDao {
                 testItems.add(item);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("can't read file");
         }
 
         return testItems;
-
     }
 
     private InputStream getFileFromResourceAsStream(String fileName) {
