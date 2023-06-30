@@ -7,5 +7,5 @@ import java.util.List;
 public interface TestService {
     List<TestItem> getAllTestItems();
 
-    void doTest();
+    void runTest();
 }

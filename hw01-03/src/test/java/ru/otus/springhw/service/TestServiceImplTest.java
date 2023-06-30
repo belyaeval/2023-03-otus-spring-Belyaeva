@@ -49,7 +49,7 @@ public class TestServiceImplTest {
         given(testDao.getAll()).willReturn(testItemList);
         given(ioService.readInt()).willReturn(expectedAnswer);
 
-        testService.doTest();
+        testService.runTest();
 
         verify(ioService, times(1)).readStringWithPrompt("Hello! Please, enter your name and surname:");
         verify(ioService).outputString(contains("Question"));
@@ -79,7 +79,7 @@ public class TestServiceImplTest {
         given(ioService.readInt()).willReturn(expectedAnswer);
         given(appProps.getPassScore()).willReturn(expectedPassingScores);
 
-        testService.doTest();
+        testService.runTest();
 
         verify(ioService).outputString(matches((expectedName) + ".+" + expectedPassingScores));
         verify(ioService).outputString(contains("You passed the test"));

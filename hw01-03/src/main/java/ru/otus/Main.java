@@ -10,8 +10,8 @@ import ru.otus.springhw.service.TestServiceImpl;
 public class Main {
     public static void main(String[] args) {
         ApplicationContext context = SpringApplication.run(Main.class, args);
-        TestService runner = context.getBean(TestServiceImpl.class);
+        TestService service = context.getBean(TestServiceImpl.class);
 
-        runner.doTest();
+        service.runTest();
     }
 }

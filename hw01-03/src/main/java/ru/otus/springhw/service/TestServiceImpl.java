@@ -33,7 +33,7 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public void doTest() {
+    public void runTest() {
         List<TestItem> testItems = getAllTestItems();
         Student student = greet();
 
