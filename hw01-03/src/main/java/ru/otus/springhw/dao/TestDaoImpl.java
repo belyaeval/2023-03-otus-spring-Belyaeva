@@ -1,7 +1,6 @@
 package ru.otus.springhw.dao;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import ru.otus.springhw.config.AppProps;
 import ru.otus.springhw.domain.TestItem;
 import ru.otus.springhw.util.QABinder;
@@ -14,20 +13,22 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-@Repository
+@Component
 public class TestDaoImpl implements TestDao {
     private final AppProps appProps;
 
-    @Autowired
-    public TestDaoImpl(AppProps appProps) {
+    private final QABinder qaBinder;
+
+    public TestDaoImpl(AppProps appProps, QABinder qaBinder) {
         this.appProps = appProps;
+        this.qaBinder = qaBinder;
     }
 
+    @Override
     public List<TestItem> getAll() {
         String line;
         String lineSeparator = ",";
         List<TestItem> testItems = new ArrayList<>();
-        QABinder qaBinder = new QABinder();
         String filePath = appProps.getFilePath();
 
         InputStream is = getFileFromResourceAsStream(filePath);

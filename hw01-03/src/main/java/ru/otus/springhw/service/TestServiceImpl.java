@@ -1,6 +1,5 @@
 package ru.otus.springhw.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.otus.springhw.config.AppProps;
 import ru.otus.springhw.dao.TestDao;
@@ -19,7 +18,6 @@ public class TestServiceImpl implements TestService {
 
     private final LocalizationMsgService msgServ;
 
-    @Autowired
     public TestServiceImpl(TestDao testDao, IOService ioService, AppProps appProps, LocalizationMsgService msgServ) {
         this.testDao = testDao;
         this.ioService = ioService;

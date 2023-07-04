@@ -1,7 +1,9 @@
 package ru.otus.springhw.util;
 
+import org.springframework.stereotype.Component;
 import ru.otus.springhw.domain.TestItem;
 
+@Component
 public class QABinder {
     public TestItem bindQAItem(String[] qaArray) {
         int questionId;
@@ -9,7 +11,7 @@ public class QABinder {
         String answers;
         int correctId;
 
-        try{
+        try {
             questionId = Integer.parseInt(qaArray[0]);
             questiobBody = qaArray[1];
             answers = qaArray[2];

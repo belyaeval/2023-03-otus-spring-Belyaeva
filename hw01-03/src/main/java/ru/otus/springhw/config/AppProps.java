@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.Locale;
 
-@ConfigurationProperties(prefix="application")
+@ConfigurationProperties(prefix = "application")
 public class AppProps {
     private String filePath;
 
