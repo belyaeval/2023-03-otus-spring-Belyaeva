@@ -1,0 +1,12 @@
+spring:
+  messages:
+    basename: "i18n/appmessages"
+    encoding: "UTF-8"
+  shell:
+    interactive:
+      enabled: false
+
+application:
+  file-path: "test_en.csv"
+  pass-score: 3
+  locale: en
