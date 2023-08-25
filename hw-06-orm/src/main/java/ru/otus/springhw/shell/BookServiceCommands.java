@@ -13,6 +13,7 @@ import ru.otus.springhw.service.BookService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @ShellComponent
 @RequiredArgsConstructor
@@ -63,12 +64,16 @@ public class BookServiceCommands {
         Genre genre = genreHandler.createGenre(gName);
         Book book = bookHandler.createBook(id, bName, author, genre);
 
-        book = bookService.update(book, id);
+        try {
+            book = bookService.update(book, id);
 
-        return book == null ? String.format("Book with id %d doesn't exist", id) : String.format(
-                "You updated book № %d: %s, author: %s, genre: %s", book.getId(), book.getName(),
-                book.getAuthor().getName(), book.getGenre().getName()
-        );
+            return String.format(
+                    "You updated book № %d: %s, author: %s, genre: %s", book.getId(), book.getName(),
+                    book.getAuthor().getName(), book.getGenre().getName()
+            );
+        } catch (NoSuchElementException e) {
+            return String.format("Book  with id %d doesn't exist", id);
+        }
     }
 
     @ShellMethod(value = "Get all books", key = {"gab", "get-all-b"})
@@ -82,5 +87,19 @@ public class BookServiceCommands {
         }
 
         return "Your books list: \n" + booksString;
+    }
+
+    @ShellMethod(value = "Add comment", key = {"ac", "add-comm"})
+    public String addCommentToBook(long bId, String commText) {
+        bookService.addComment(bId, commText);
+
+        return "You add comment: " + commText;
+    }
+
+    @ShellMethod(value = "Get all books comments", key = {"gabc", "get-all-b-c"})
+    public String getAllComments(long bId) {
+        List<String> commsString = bookService.getAllBookComments(bId);
+
+        return "Comments to book with id: " + bId + " : \n" + commsString;
     }
 }

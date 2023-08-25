@@ -6,7 +6,7 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import ru.otus.springhw.domain.Book;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-@Repository
+@Component
 public class BookDaoImpl implements BookDao {
     @PersistenceContext
     private final EntityManager em;

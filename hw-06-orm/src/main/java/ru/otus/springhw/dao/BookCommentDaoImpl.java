@@ -1,33 +1,32 @@
 package ru.otus.springhw.dao;
 
-import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
-import ru.otus.springhw.domain.Book;
+import org.springframework.stereotype.Component;
 import ru.otus.springhw.domain.BookComment;
 
-import java.util.List;
+import java.util.Optional;
 
-@Repository
+@Component
 @RequiredArgsConstructor
 public class BookCommentDaoImpl implements BookCommentDao {
     @PersistenceContext
     private final EntityManager em;
 
     @Override
-    public List<BookComment> findAllByBook(Book book) {
-        long bookId = book.getId();
+    public BookComment save(BookComment comment) {
+        if (comment.getId() == 0) {
+            em.persist(comment);
 
-        EntityGraph<?> eg = em.getEntityGraph("book-comment-book-entity-graph");
-        TypedQuery<BookComment> query = em.createQuery(
-                "select c from BookComment c where c.book.id = :bookId", BookComment.class
-        );
-        query.setParameter("bookId", bookId);
-        query.setHint("jakarta.persistence.fetchgraph", eg);
+            return comment;
+        }
 
-        return query.getResultList();
+        return em.merge(comment);
+    }
+
+    @Override
+    public Optional<BookComment> findById(long id) {
+        return Optional.ofNullable(em.find(BookComment.class, id));
     }
 }

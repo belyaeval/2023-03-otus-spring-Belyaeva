@@ -6,9 +6,13 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.otus.springhw.dao.BookDao;
 import ru.otus.springhw.domain.Author;
 import ru.otus.springhw.domain.Book;
+import ru.otus.springhw.domain.BookComment;
 import ru.otus.springhw.domain.Genre;
+import ru.otus.springhw.handler.BookCommentHandler;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -20,6 +24,9 @@ public class BookServiceImpl implements BookService {
 
     private final GenreService genreService;
 
+    private final BookCommentService commentService;
+
+    private final BookCommentHandler commentHandler;
 
     @Override
     @Transactional
@@ -34,10 +41,8 @@ public class BookServiceImpl implements BookService {
 
         String existingBookAName = existingBook.getAuthor().getName();
         String newBookAName = book.getAuthor().getName();
-        String existingBookGName = existingBook.getGenre().getName();
-        String newBookGName = book.getGenre().getName();
 
-        if (existingBookAName.equals(newBookAName) && existingBookGName.equals(newBookGName)) {
+        if (existingBookAName.equals(newBookAName)) {
             return null;
         }
 
@@ -65,7 +70,8 @@ public class BookServiceImpl implements BookService {
 
             return bookDao.update(book);
         }
-        return null;
+
+        throw new NoSuchElementException();
     }
 
     @Override
@@ -92,6 +98,29 @@ public class BookServiceImpl implements BookService {
     @Transactional(readOnly = true)
     public Book findByName(String name) {
         return bookDao.findByName(name);
+    }
+
+    @Override
+    @Transactional
+    public void addComment(long bookId, String commText) {
+        Book book = findById(bookId);
+        BookComment comment = commentHandler.createComment(commText, book);
+
+        commentService.save(comment);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<String> getAllBookComments(long bookId) {
+        Book book = findById(bookId);
+
+        List<String> commsString = new ArrayList<>();
+
+        for (BookComment comm : book.getComments()) {
+            commsString.add(comm.getText());
+        }
+
+        return commsString;
     }
 
     private Author validateAuthor(Author author) {

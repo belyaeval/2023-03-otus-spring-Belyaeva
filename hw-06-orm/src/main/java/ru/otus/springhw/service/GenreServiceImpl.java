@@ -15,7 +15,6 @@ public class GenreServiceImpl implements GenreService {
 
 
     @Override
-    @Transactional(readOnly = true)
     public Genre findById(long id) {
         Optional<Genre> genre = genreDao.findById(id);
 

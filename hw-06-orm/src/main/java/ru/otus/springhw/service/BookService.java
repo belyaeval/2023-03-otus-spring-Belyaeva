@@ -16,4 +16,8 @@ public interface BookService {
     List<Book> findAll();
 
     Book findByName(String name);
+
+    void addComment(long bookId, String commText);
+
+    List<String> getAllBookComments(long bookId);
 }

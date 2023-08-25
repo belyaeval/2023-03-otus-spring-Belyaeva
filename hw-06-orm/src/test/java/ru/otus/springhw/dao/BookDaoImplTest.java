@@ -9,8 +9,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.springhw.domain.Author;
 import ru.otus.springhw.domain.Book;
+import ru.otus.springhw.domain.BookComment;
 import ru.otus.springhw.domain.Genre;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -41,6 +43,7 @@ public class BookDaoImplTest {
     @Test
     void shouldReturnExpectedBookById() {
         Book expectedBook = new Book(1, "Евгений Онегин", new Author(1, "Пушкин"), new Genre(1, "роман"));
+        expectedBook.setComments(List.of(new BookComment(1, "отличная", expectedBook), new BookComment(2, "интересная", expectedBook)));
         Optional<Book> actualBook = (bookDao.findById(expectedBook.getId()));
         assertThat(actualBook).isPresent();
 
@@ -51,6 +54,7 @@ public class BookDaoImplTest {
     @Test
     void shouldReturnExpectedBookByName() {
         Book expectedBook = new Book(1, "Евгений Онегин", new Author(1, "Пушкин"), new Genre(1, "роман"));
+        expectedBook.setComments(List.of(new BookComment(1, "отличная", expectedBook), new BookComment(2, "интересная", expectedBook)));
         Book actualBook = (bookDao.findByName(expectedBook.getName()));
 
         assertThat(actualBook).usingRecursiveComparison().isEqualTo(expectedBook);
@@ -59,8 +63,8 @@ public class BookDaoImplTest {
     @DisplayName("обновлять книгу по id")
     @Test
     void shouldUpdateExpectedBookById() {
-        Book expectedBook = new Book(1, "Три толстяка", new Author(2, "Олеша"), new Genre(2, "cказка"));
-        Book actualBook = new Book(1, "Евгений Онегин", new Author(1, "Пушкин"), new Genre(1, "hоман"));
+        Book expectedBook = new Book(1, "Три толстяка", new Author("Олеша"), new Genre("cказка"));
+        Book actualBook = new Book(1, "Евгений Онегин", new Author(1, "Пушкин"), new Genre(1, "роман"));
 
         bookDao.update(expectedBook);
 

@@ -1,10 +1,11 @@
 package ru.otus.springhw.dao;
 
-import ru.otus.springhw.domain.Book;
 import ru.otus.springhw.domain.BookComment;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface BookCommentDao {
-    List<BookComment> findAllByBook(Book book);
+    BookComment save(BookComment comment);
+
+    Optional<BookComment> findById(long id);
 }

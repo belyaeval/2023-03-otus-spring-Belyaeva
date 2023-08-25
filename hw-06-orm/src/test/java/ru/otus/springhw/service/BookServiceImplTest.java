@@ -8,6 +8,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.otus.springhw.dao.BookDao;
 import ru.otus.springhw.domain.Author;
 import ru.otus.springhw.domain.Book;
+import ru.otus.springhw.domain.BookComment;
 import ru.otus.springhw.domain.Genre;
 
 import java.util.List;
@@ -73,18 +74,19 @@ public class BookServiceImplTest {
         verify(bookDao).update(expectedBook);
     }
 
-//    @DisplayName("что книга удалена по id")
-//    @Test
-//    public void shouldDeleteBookById() {
-//        Book expectedBook = new Book(1, "Евгений Онегин", new Author(1, "Пушкин"), new Genre("Роман"));
-//        long id = 1;
-//
-//        given(bookDao.delete(expectedBook)).;
-//
-//        bookService.deleteById(id);
-//
-//        verify(bookDao).delete(expectedBook);
-//    }
+    @DisplayName("что книга удалена по id")
+    @Test
+    public void shouldDeleteBookById() {
+        Book expectedBook = new Book(1, "Евгений Онегин", new Author(1, "Пушкин"), new Genre("Роман"));
+        expectedBook.setComments(List.of(new BookComment(1, "отличная", expectedBook), new BookComment(2, "интересная", expectedBook)));
+        long id = 1;
+
+        given(bookDao.findById(1)).willReturn(Optional.of(expectedBook));
+
+        bookService.deleteById(id);
+
+        verify(bookDao).delete(expectedBook);
+    }
 
     @DisplayName("что выводится список всех книг")
     @Test
