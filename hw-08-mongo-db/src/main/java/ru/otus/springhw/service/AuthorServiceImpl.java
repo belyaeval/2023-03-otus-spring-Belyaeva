@@ -6,6 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.otus.springhw.repository.AuthorRepository;
 import ru.otus.springhw.domain.Author;
 
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -14,29 +16,35 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
 
     @Override
-    public Author findById(String id) {
-        Optional<Author> author = authorRepository.findById(id);
-
-        return author.orElse(null);
+    public Optional<Author> findById(String id) {
+        return authorRepository.findById(id);
     }
 
     @Override
     @Transactional
     public Author save(Author author) {
-        Author existedAuthor = findByName(author.getName());
+        Author existingAuthor = findByName(author.getName()).orElse(author);
 
-        if (existedAuthor == null) {
-            return authorRepository.save(author);
-        }
-
-        return null;
+        return authorRepository.save(existingAuthor);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Author findByName(String name) {
-        Optional<Author> author = authorRepository.findByName(name);
+    public Optional<Author> findByName(String name) {
+        return authorRepository.findByName(name);
+    }
 
-        return author.orElse(null);
+    @Override
+    public List<Author> findAll() {
+        return authorRepository.findAll();
+    }
+
+    @Override
+    @Transactional
+    public Author updateById(String id, String name) {
+        Author authorToUpdate = findById(id).orElseThrow(NoSuchElementException::new);
+        authorToUpdate.setName(name);
+
+        return authorRepository.save(authorToUpdate);
     }
 }

@@ -2,10 +2,14 @@ package ru.otus.springhw.service;
 
 import ru.otus.springhw.domain.Genre;
 
+import java.util.Optional;
+
 public interface GenreService {
-    Genre findById(String id);
+    Optional<Genre> findById(String id);
 
     Genre save(Genre genre);
 
-    Genre findByName(String name);
+    Optional<Genre> findByName(String gName);
+
+    Genre updateById(String id, String name);
 }

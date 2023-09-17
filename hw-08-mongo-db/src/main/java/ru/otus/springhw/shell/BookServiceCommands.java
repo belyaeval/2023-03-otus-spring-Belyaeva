@@ -28,11 +28,14 @@ public class BookServiceCommands {
 
     @ShellMethod(value = "Get book", key = {"gb", "get-b"})
     public String getBook(String id) {
-        Book book = bookService.findById(id);
+        try {
+            Book book = bookService.findById(id).orElseThrow(NoSuchElementException::new);
 
-        return book == null ? String.format("Book with id %s doesn't exist", id) :
-                String.format("You got book № %s: %s, author: %s, genre: %s",
-                        id, book.getName(), book.getAuthor().getName(), book.getGenre().getName());
+            return String.format("You got book № %s: %s, author: %s, genre: %s",
+                    id, book.getName(), book.getAuthor().getName(), book.getGenre().getName());
+        } catch (NoSuchElementException e) {
+            return String.format("Book with id %s doesn't exist", id);
+        }
     }
 
     @ShellMethod(value = "Add book", key = {"ab", "add-b"})
@@ -46,19 +49,20 @@ public class BookServiceCommands {
 
             return String.format("You inserted book № %s: %s, author: %s, genre: %s",
                     book.getId(), book.getName(), book.getAuthor().getName(), book.getGenre().getName());
-        } catch (NoSuchElementException e) {
+        } catch (RuntimeException e) {
             return "This book is already exists";
         }
     }
 
     @ShellMethod(value = "Delete book", key = {"db", "delete-b"})
     public String deleteBook(String id) {
-        Book book = bookService.deleteById(id);
+        try {
+            bookService.deleteById(id);
 
-        return book != null ? String.format(
-                "You deleted book № %s: %s, author: %s, genre: %s", book.getId(), book.getName(),
-                book.getAuthor().getName(), book.getGenre().getName()) :
-                String.format("Book with id %s doesn't exists", id);
+            return String.format("You deleted with id %s", id);
+        } catch (NoSuchElementException e) {
+            return String.format("Book with id %s doesn't exist", id);
+        }
     }
 
     @ShellMethod(value = "Update book", key = {"ub", "update-b"})

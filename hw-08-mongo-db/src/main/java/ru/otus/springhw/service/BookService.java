@@ -3,17 +3,18 @@ package ru.otus.springhw.service;
 import ru.otus.springhw.domain.Book;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BookService {
     Book save(Book book);
 
-    Book findById(String id);
+    Optional<Book> findById(String id);
 
     Book updateById(String id, Book book);
 
-    Book deleteById(String id);
+    void deleteById(String id);
 
     List<Book> findAll();
 
-    Book findByName(String name);
+    Optional<Book> findByName(String name);
 }

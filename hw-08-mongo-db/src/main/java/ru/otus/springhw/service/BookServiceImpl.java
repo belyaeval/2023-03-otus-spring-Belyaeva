@@ -28,7 +28,7 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public Book save(Book book) {
-        Book existingBook = findByName(book.getName());
+        Book existingBook = findByName(book.getName()).orElse(null);
 
         if (existingBook == null) {
             validateBook(book);
@@ -40,7 +40,7 @@ public class BookServiceImpl implements BookService {
         String newBookAName = book.getAuthor().getName();
 
         if (existingBookAName.equals(newBookAName)) {
-            throw new NoSuchElementException();
+            throw new RuntimeException();
         }
 
         validateBook(book);
@@ -49,45 +49,33 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book findById(String id) {
-        Optional<Book> book = bookRepository.findById(id);
-
-        return book.orElse(null);
+    public Optional<Book> findById(String id) {
+        return bookRepository.findById(id);
     }
 
     @Override
     @Transactional
     public Book updateById(String id, Book book) {
-        Book bookToUpdate = findById(id);
+        findById(id).orElseThrow(NoSuchElementException::new);
 
-        if (bookToUpdate != null) {
-            validateBook(book);
-            book.setId(id);
+        validateBook(book);
+        book.setId(id);
 
-            return bookRepository.save(book);
-        }
-
-        throw new NoSuchElementException();
+        return bookRepository.save(book);
     }
 
     @Override
     @Transactional
-    public Book deleteById(String id) {
-        Book bookToDelete = findById(id);
+    public void deleteById(String id) {
+        Book bookToDelete = findById(id).orElseThrow(NoSuchElementException::new);
 
-        if (bookToDelete != null) {
-            List<BookComment> comms = commentRepository.getAllByBook(id);
+        List<BookComment> comms = commentRepository.getAllByBook(id);
 
-            if (!comms.isEmpty()) {
-                comms.forEach(commentRepository::delete);
-            }
-
-            bookRepository.delete(bookToDelete);
-
-            return bookToDelete;
+        if (!comms.isEmpty()) {
+            comms.forEach(commentRepository::delete);
         }
 
-        return null;
+        bookRepository.delete(bookToDelete);
     }
 
     @Override
@@ -98,24 +86,16 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional(readOnly = true)
-    public Book findByName(String name) {
-        Optional<Book> book = bookRepository.findByName(name);
-
-        return book.orElse(null);
+    public Optional<Book> findByName(String name) {
+        return bookRepository.findByName(name);
     }
 
     private Author validateAuthor(Author author) {
-        Author validatedAuthor = author.getId() == null ? authorService.findByName(author.getName()) :
-                authorService.findById(author.getId());
-
-        return validatedAuthor == null ? authorService.save(author) : validatedAuthor;
+        return authorService.findByName(author.getName()).orElseGet(() -> authorService.save(author));
     }
 
     private Genre validateGenre(Genre genre) {
-        Genre validatedGenre = genre.getId() == null ? genreService.findByName(genre.getName()) :
-                genreService.findById(genre.getId());
-
-        return validatedGenre == null ? genreService.save(genre) : validatedGenre;
+        return genreService.findByName(genre.getName()).orElseGet(() -> genreService.save(genre));
     }
 
     private void validateBook(Book book) {
