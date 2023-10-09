@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Add comment</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<form id="add-comment-form" action="add-comment.html" th:method="post" th:action="@{/comments/add-comment(bookId=${comment.bookId})}" th:object="${comment}">
+    <h3>Add comment to:
+        <div th:text="*{bookName}">BookName</div>
+    </h3>
+
+    <div class="row">
+        <label for="comment-input">Text:</label>
+        <input id="comment-input" type="text" th:field="*{text}"/>
+        <div class="errors" th:if="${#fields.hasErrors('text')}" th:errors="*{text}">Wrong comment text error</div>
+    </div>
+
+    <div class="row">
+        <button type="submit">Add</button>
+        <a href="comments.html" th:href="@{/comments}"><button type="button">Cancel</button></a>
+    </div>
+</form>
+</body>
+</html>
